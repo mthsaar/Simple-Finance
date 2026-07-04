@@ -52,7 +52,6 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             binding.btExcluir.visibility = View.GONE
-            binding.btVerLancamentos.visibility = View.GONE
         }
 
 
@@ -62,6 +61,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.btSalvar.setOnClickListener {
             salvar()
+        }
+
+        binding.btVerLancamentos.setOnClickListener {
+            finish()
         }
 
     }

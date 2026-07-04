@@ -4,36 +4,23 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Coin Circle -->
+    <!-- Coin Circle (Gold) -->
     <path
         android:fillColor="#FFD700"
         android:pathData="M54,54m-35,0a35,35 0,1 1,70 0a35,35 0,1 1,-70 0"
         android:strokeWidth="2"
         android:strokeColor="#B8860B"/>
 
-    <!-- Inner Circle for 'coined' effect -->
+    <!-- Inner Circle for depth (Darker Gold) -->
     <path
         android:fillColor="#00000000"
         android:pathData="M54,54m-30,0a30,30 0,1 1,60 0a30,30 0,1 1,-60 0"
-        android:strokeWidth="1"
+        android:strokeWidth="1.5"
         android:strokeColor="#B8860B"/>
 
-    <!-- $ Symbol -->
+    <!-- Bolder, Centered '$' Symbol -->
     <path
-        android:fillColor="#B8860B"
-        android:pathData="M46,42c-2,0 -4,1 -4,3s2,3 4,3s4,1 4,3s-2,3 -4,3m0,-11v13m-2,-13c-2,0 -4,1 -4,3s2,3 4,3s4,1 4,3s-2,3 -4,3m0,-11v13" />
-
-    <!-- Simplified $ and F text placement representation using paths -->
-    <!-- This is a symbolic representation as VectorDrawables don't support <text> -->
-
-    <!-- '$' Path -->
-    <path
-        android:fillColor="#5D4037"
-        android:pathData="M45,45c-2.2,0 -4,1.8 -4,4s1.8,4 4,4s4,1.8 4,4s-1.8,4 -4,4m0,-14v16M43,47c-2.2,0 -4,1.8 -4,4s1.8,4 4,4s4,1.8 4,4s-1.8,4 -4,4" />
-
-    <!-- 'F' Path -->
-    <path
-        android:fillColor="#5D4037"
-        android:pathData="M58,45v16M58,45h8M58,53h6" />
+        android:fillColor="#3E2723"
+        android:pathData="M54,40c-4,0 -7,3 -7,7s3,6 7,6s7,3 7,7s-3,7 -7,7M54,37v34M52,40c-4,0 -7,3 -7,7s3,6 7,6s7,3 7,7s-3,7 -7,7" />
 
 </vector>

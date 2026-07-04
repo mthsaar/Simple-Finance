@@ -1,16 +1,17 @@
 package com.saar.silmplefinance.database
 
+import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
 import com.saar.silmplefinance.entity.Cadastro
-import kotlinx.coroutines.tasks.await
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
 
-class DatabaseHandler(context: Context) {
-
-    private val banco = Firebase.firestore
+class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
+        private const val DATABASE_NAME = "SilmpleFinance.db"
+        private const val DATABASE_VERSION = 1
         private const val TABLE_NAME = "cadastro"
         private const val ID = "id"
         private const val NOME = "nome"
@@ -19,98 +20,94 @@ class DatabaseHandler(context: Context) {
         private const val DATA = "data"
     }
 
-    suspend fun incluir(cadastro: Cadastro) {
+    override fun onCreate(db: SQLiteDatabase?) {
+        val createTable = ("CREATE TABLE " + TABLE_NAME + "("
+                + ID + " INTEGER PRIMARY KEY,"
+                + NOME + " TEXT,"
+                + TIPO + " TEXT,"
+                + VALOR + " TEXT,"
+                + DATA + " TEXT" + ")")
+        db?.execSQL(createTable)
+    }
 
-        val registro = hashMapOf(
-            NOME to cadastro.nome,
-            TIPO to cadastro.tipo,
-            VALOR to cadastro.valor,
-            DATA to cadastro.data
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
+        onCreate(db)
+    }
 
+    fun incluir(cadastro: Cadastro) {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+        contentValues.put(ID, cadastro.id)
+        contentValues.put(NOME, cadastro.nome)
+        contentValues.put(TIPO, cadastro.tipo)
+        contentValues.put(VALOR, cadastro.valor)
+        contentValues.put(DATA, cadastro.data)
+
+        db.insert(TABLE_NAME, null, contentValues)
+        db.close()
+    }
+
+    fun alterar(cadastro: Cadastro) {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+        contentValues.put(NOME, cadastro.nome)
+        contentValues.put(TIPO, cadastro.tipo)
+        contentValues.put(VALOR, cadastro.valor)
+        contentValues.put(DATA, cadastro.data)
+
+        db.update(TABLE_NAME, contentValues, "$ID = ?", arrayOf(cadastro.id.toString()))
+        db.close()
+    }
+
+    fun excluir(id: Int) {
+        val db = this.writableDatabase
+        db.delete(TABLE_NAME, "$ID = ?", arrayOf(id.toString()))
+        db.close()
+    }
+
+    fun pesquisar(id: Int): Cadastro? {
+        val db = this.readableDatabase
+        val cursor = db.query(
+            TABLE_NAME, arrayOf(ID, NOME, TIPO, VALOR, DATA),
+            "$ID = ?", arrayOf(id.toString()), null, null, null, null
         )
 
-        banco
-            .collection( TABLE_NAME )
-            .document(cadastro.id.toString())
-            .set( registro )
-            .await()
-    }
-
-    suspend fun alterar(cadastro: Cadastro) {
-
-        val registro = hashMapOf(
-            NOME to cadastro.nome,
-            TIPO to cadastro.tipo,
-            VALOR to cadastro.valor,
-            DATA to cadastro.data
-        )
-
-        banco
-            .collection( TABLE_NAME )
-            .document(cadastro.id.toString())
-            .set( registro )
-            .await()
-
-    }
-
-
-    suspend fun excluir(id: Int) {
-
-        banco
-            .collection( TABLE_NAME )
-            .document(id.toString())
-            .delete()
-            .await()
-
-    }
-
-    suspend fun pesquisar(id: Int): Cadastro? {
-
-        val documento = banco
-            .collection(TABLE_NAME)
-            .document(id.toString())
-            .get()
-            .await()
-
-        if (documento.exists()) {
-            val cadastro = Cadastro(
-                id,
-                documento.get(NOME).toString(),
-                documento.get(TIPO).toString(),
-                documento.get(VALOR).toString(),
-                documento.get(DATA).toString()
-
+        var cadastro: Cadastro? = null
+        if (cursor != null && cursor.moveToFirst()) {
+            cadastro = Cadastro(
+                cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
+                cursor.getString(cursor.getColumnIndexOrThrow(NOME)),
+                cursor.getString(cursor.getColumnIndexOrThrow(TIPO)),
+                cursor.getString(cursor.getColumnIndexOrThrow(VALOR)),
+                cursor.getString(cursor.getColumnIndexOrThrow(DATA))
             )
-            return cadastro
-        } else {
-            return null
+            cursor.close()
         }
-
+        db.close()
+        return cadastro
     }
 
-    suspend fun listar(): MutableList<Cadastro> {
-
-        val documentos = banco
-            .collection(TABLE_NAME)
-            .get()
-            .await()
-
+    fun listar(): MutableList<Cadastro> {
         val lista = mutableListOf<Cadastro>()
+        val db = this.readableDatabase
+        val selectQuery = "SELECT * FROM $TABLE_NAME"
+        val cursor = db.rawQuery(selectQuery, null)
 
-        for (documento in documentos.documents) {
-            val cadastro = Cadastro(
-                documento.id.toInt(),
-                documento.get(NOME).toString(),
-                documento.get(TIPO).toString(),
-                documento.get(VALOR).toString(),
-                documento.get(DATA).toString(),
-
-            )
-            lista.add(cadastro)
+        if (cursor.moveToFirst()) {
+            do {
+                val cadastro = Cadastro(
+                    cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(NOME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(TIPO)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(VALOR)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(DATA))
+                )
+                lista.add(cadastro)
+            } while (cursor.moveToNext())
         }
-
+        cursor.close()
+        db.close()
         return lista
-
     }
-
 }

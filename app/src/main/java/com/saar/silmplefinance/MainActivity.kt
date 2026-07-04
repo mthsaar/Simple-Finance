@@ -11,8 +11,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import java.util.Calendar
 import java.util.Locale
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
 import com.saar.silmplefinance.database.DatabaseHandler
 import com.saar.silmplefinance.databinding.ActivityMainBinding
 import com.saar.silmplefinance.entity.Cadastro
@@ -104,42 +102,33 @@ class MainActivity : AppCompatActivity() {
             "Débito"
         }
 
-        lifecycleScope.launch {
-            val idExtra = intent.getIntExtra("id", 0)
-            if (idExtra > 0) {
-                val cadastro = Cadastro(idExtra, nome, tipo, valor, data)
-                banco.alterar(cadastro)
-                Toast.makeText(this@MainActivity, "Lançamento salvo", Toast.LENGTH_SHORT).show()
-            } else {
-                // Generate a random ID or use a timestamp
-                val id = (System.currentTimeMillis() % Int.MAX_VALUE).toInt()
-                val cadastro = Cadastro(id, nome, tipo, valor, data)
-                banco.incluir(cadastro)
-                Toast.makeText(this@MainActivity, "Lançamento salvo", Toast.LENGTH_SHORT).show()
-            }
-            finish()
+        val idExtra = intent.getIntExtra("id", 0)
+        if (idExtra > 0) {
+            val cadastro = Cadastro(idExtra, nome, tipo, valor, data)
+            banco.alterar(cadastro)
+            Toast.makeText(this@MainActivity, "Lançamento salvo", Toast.LENGTH_SHORT).show()
+        } else {
+            // Generate a random ID or use a timestamp
+            val id = (System.currentTimeMillis() % Int.MAX_VALUE).toInt()
+            val cadastro = Cadastro(id, nome, tipo, valor, data)
+            banco.incluir(cadastro)
+            Toast.makeText(this@MainActivity, "Lançamento salvo", Toast.LENGTH_SHORT).show()
         }
+        finish()
     }
 
     private fun excluir() {
-
-        lifecycleScope.launch {
-            val id = binding.etCod.text.toString().toIntOrNull()
-
-            if (id == null) {
-                binding.etCod.error = "Digite um código válido"
-            } else {
-
-                banco.excluir(id)
-
-                Toast.makeText(
-                    this@MainActivity,
-                    "Exclusão efetuada com sucesso.",
-                    Toast.LENGTH_LONG
-                ).show()
-
-                finish()
-            }
+        val id = binding.etCod.text.toString().toIntOrNull()
+        if (id == null) {
+            binding.etCod.error = "Digite um código válido"
+        } else {
+            banco.excluir(id)
+            Toast.makeText(
+                this@MainActivity,
+                "Exclusão efetuada com sucesso.",
+                Toast.LENGTH_LONG
+            ).show()
+            finish()
         }
     }
 }

@@ -5,8 +5,6 @@ import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
 import androidx.core.view.WindowInsetsCompat
 import com.saar.silmplefinance.database.DatabaseHandler
 import com.saar.silmplefinance.adapter.ElementoListaAdapter
@@ -42,17 +40,14 @@ class Extrato_View : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        lifecycleScope.launch {
+        val registros = banco.listar()
 
-            val registros = banco.listar()
+        val adapter = ElementoListaAdapter(
+            this@Extrato_View,
+            registros
+        )
 
-            val adapter = ElementoListaAdapter(
-                this@Extrato_View,
-                registros
-            )
-
-            binding.lvExtrato.adapter = adapter
-        }
+        binding.lvExtrato.adapter = adapter
     }
 
 

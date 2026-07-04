@@ -10,7 +10,7 @@ import com.saar.silmplefinance.entity.Cadastro
 class DatabaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_NAME = "SilmpleFinance.db"
+        private const val DATABASE_NAME = "SimpleFinance.db"
         private const val DATABASE_VERSION = 1
         private const val TABLE_NAME = "cadastro"
         private const val ID = "id"

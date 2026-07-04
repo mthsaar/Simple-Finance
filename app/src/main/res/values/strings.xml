@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Silmple Finance</string>
+    <string name="app_name">Simple Finance</string>
     <string name="tipo">Tipo:</string>
     <string name="credito">Crédito</string>
     <string name="debito">Débito</string>

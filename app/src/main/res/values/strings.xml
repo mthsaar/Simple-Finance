@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Silmple Finance</string>
+    <string name="tipo">Tipo:</string>
+    <string name="credito">Crédito</string>
+    <string name="debito">Débito</string>
+    <string name="valor">Valor:</string>
+    <string name="data_lanc">Data Lanc.:</string>
+    <string name="salvar">Salvar</string>
+    <string name="ver_lan_amentos">Ver Lançamentos</string>
+    <string name="input_icon">Input Icon</string>
+    <string name="edit_icon">Edit Icon</string>
+    <string name="excluir">Excluir</string>
+    <string name="nome_do_lanc">Nome do Lanc.:</string>
+    <string name="codigo">Código do Lanc.:</string>
+</resources>
